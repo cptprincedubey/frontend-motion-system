@@ -38,6 +38,7 @@ export default function Hero() {
   const textBlockRef = useRef<HTMLDivElement>(null);
   const statsRef   = useRef<HTMLDivElement>(null);
   const visualRef  = useRef<HTMLDivElement>(null);
+  const carRef     = useRef<HTMLImageElement>(null);
   const hintRef    = useRef<HTMLDivElement>(null);
   const numRefs    = useRef<(HTMLSpanElement | null)[]>([]);
 
@@ -121,6 +122,31 @@ export default function Hero() {
         },
       });
     }
+
+    // ── Continuous car revolution ──────────────────────────────────
+    if (carRef.current) {
+      gsap.to(carRef.current, {
+        rotation: 360,
+        duration: 8,
+        ease: "none",
+        repeat: -1,
+      });
+    }
+
+    // ── Scroll: car rotation enhancement ────────────────────────────
+    if (carRef.current) {
+      gsap.to(carRef.current, {
+        rotation: "+=720",
+        ease: "none",
+        scrollTrigger: {
+          trigger: heroRef.current,
+          start: "0% top",
+          end: "100% top",
+          scrub: 1.5,
+        },
+      });
+    }
+
     return () => ScrollTrigger.getAll().forEach((t) => t.kill());
   }, []);
 
@@ -194,6 +220,7 @@ export default function Hero() {
           <div className="relative w-full max-w-[540px] aspect-[4/5] overflow-hidden rounded-[2rem] border border-white/10 bg-gradient-to-b from-slate-950/80 to-slate-900/60 shadow-[0_40px_120px_-40px_rgba(124,58,237,0.4)]">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(167,139,250,0.18),transparent_60%)]" />
             <img
+              ref={carRef}
               src="https://paraschaturvedi.github.io/car-scroll-animation/McLaren%20720S%202022%20top%20view.png"
               alt="hero car"
               className="absolute inset-0 w-full h-full object-contain p-8 drop-shadow-2xl"
