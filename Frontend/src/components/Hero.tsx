@@ -193,7 +193,7 @@ export default function Hero() {
         <div ref={carRef}
              className="w-[min(760px,96vw)] max-w-[960px] transform-gpu will-change-transform">
           <img
-            src="https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=1000&auto=format&fit=crop&q=80"
+            src="https://paraschaturvedi.github.io/car-scroll-animation/McLaren%20720S%202022%20top%20view.png"
             alt="hero car"
             className="w-full object-contain rounded-[28px] border border-white/10 shadow-[0_-40px_100px_rgba(252,165,0,0.24)]"
           />
