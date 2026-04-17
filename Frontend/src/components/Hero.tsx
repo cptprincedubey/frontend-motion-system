@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-const HEADLINE = "WELCOME ITZ FIZZ";
+const HEADLINE = "ITZFIZZ";
 
 const STATS = [
   { target: 95, suffix: "%", label: "Success" },
@@ -126,57 +126,60 @@ export default function Hero() {
     <section
       ref={heroRef}
       className="relative flex flex-col items-center
-                 bg-[#05070f] overflow-x-hidden px-4 pt-14 pb-2"
+                 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900
+                 overflow-x-hidden px-4 pt-14 pb-2"
     >
       {/* Background parallax */}
       <div className="bg-parallax absolute inset-0 pointer-events-none">
-        <div className="w-full h-full bg-gradient-to-b from-transparent via-orange-900/10 to-transparent" />
+        <div className="w-full h-full bg-gradient-to-b from-transparent via-indigo-500/5 to-transparent" />
       </div>
 
       {/* Ambient glow */}
       <div className="pointer-events-none absolute inset-0 flex items-center
                       justify-center">
-        <div className="w-[600px] h-[600px] rounded-full bg-[radial-gradient(circle,rgba(255,80,0,0.12)_0%,transparent_70%)]" />
+        <div className="w-[700px] h-[700px] rounded-full bg-[radial-gradient(circle,rgba(139,92,246,0.08)_0%,transparent_70%)]" />
       </div>
 
-      {/* Grid */}
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[length:60px_60px]" />
+      {/* Subtle grid */}
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[length:80px_80px]" />
 
       <div ref={textBlockRef}
            className="relative z-10 flex flex-col items-center justify-center
-                      text-center gap-6 px-6 max-w-5xl min-h-[60vh]">
+                      text-center gap-8 px-6 max-w-6xl min-h-[60vh]
+                      bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10
+                      shadow-2xl mx-4">
         <p ref={taglineRef}
-           className="text-[11px] tracking-[0.35em] uppercase
-                      text-white/40 mb-2">
+           className="text-sm tracking-[0.2em] uppercase
+                      text-purple-300/80 font-medium mb-4">
           Premium digital motion design
         </p>
 
         <h1
           ref={headlineRef}
-          className="flex flex-wrap justify-center font-black
-                     text-white tracking-[0.45em]
-                     text-[clamp(32px,6vw,88px)] leading-[0.9]"
+          className="flex justify-center font-black
+                     text-white tracking-[0.4em] leading-[0.85]
+                     text-[clamp(36px,7vw,96px)] drop-shadow-lg"
           aria-label={HEADLINE}
         >
           {HEADLINE.split("").map((ch, i) =>
             ch === " " ? (
-              <span key={i} className="space inline-block w-[0.45em]" />
+              <span key={i} className="space inline-block w-[0.4em]" />
             ) : (
-              <span key={i} className="inline-block">{ch}</span>
+              <span key={i} className="inline-block hover:text-purple-300 transition-colors duration-300">{ch}</span>
             )
           )}
         </h1>
 
         <div ref={statsRef}
-             className="flex flex-wrap justify-center gap-6 md:gap-16 mt-10 px-4">
+             className="flex flex-wrap justify-center gap-8 md:gap-20 mt-12 px-4">
           {STATS.map((s, i) => (
-            <div key={i} className="text-center">
-              <div className="gradient-text font-black text-[clamp(28px,4vw,48px)]">
+            <div key={i} className="text-center group">
+              <div className="gradient-text font-black text-[clamp(32px,5vw,56px)] drop-shadow-md">
                 <span ref={(el) => { numRefs.current[i] = el; }}>
                   0{s.suffix}
                 </span>
               </div>
-              <p className="text-[11px] tracking-[0.2em] uppercase text-white/40 mt-1.5">
+              <p className="text-xs tracking-[0.15em] uppercase text-purple-200/70 mt-2 group-hover:text-purple-300 transition-colors duration-300">
                 {s.label}
               </p>
             </div>
@@ -190,9 +193,9 @@ export default function Hero() {
         <img
           src="https://paraschaturvedi.github.io/car-scroll-animation/McLaren%20720S%202022%20top%20view.png"
           alt="hero car"
-          className="w-full object-contain"
+          className="w-full object-contain drop-shadow-2xl filter brightness-110 contrast-105"
         />
-        <div className="absolute inset-x-0 bottom-[-40px] mx-auto h-[3px] w-[80%] blur-[6px] bg-gradient-to-r from-transparent via-amber-500/70 to-transparent" />
+        <div className="absolute inset-x-0 bottom-[-40px] mx-auto h-[3px] w-[80%] blur-[6px] bg-gradient-to-r from-transparent via-purple-500/70 to-transparent" />
       </div>
 
       {/* Scroll hint */}
@@ -202,12 +205,12 @@ export default function Hero() {
            onClick={() =>
              window.scrollBy({ top: window.innerHeight * 0.8, behavior: "smooth" })
            }>
-        <span className="text-[9px] tracking-[0.3em] uppercase text-white/30">
+        <span className="text-[9px] tracking-[0.3em] uppercase text-purple-300/60">
           Scroll
         </span>
-        <div className="w-px h-8 bg-white/20 overflow-hidden relative">
+        <div className="w-px h-8 bg-purple-400/20 overflow-hidden relative">
           <div className="absolute top-0 left-0 w-full h-full
-                          bg-white/60 animate-scrollLine" />
+                          bg-purple-400/70 animate-scrollLine" />
         </div>
       </div>
     </section>
