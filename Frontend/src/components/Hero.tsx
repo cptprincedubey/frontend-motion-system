@@ -87,22 +87,6 @@ export default function Hero() {
       end: "bottom top",
     };
 
-    gsap.to(carRef.current, {
-      y: -200,
-      rotate: 5,
-      scale: 0.75,
-      ease: "none",
-      scrollTrigger: { ...scrollOpts, scrub: 1.5 },
-    });
-
-    gsap.to(carRef.current, {
-      scale: 0.75, opacity: 0, ease: "none",
-      scrollTrigger: {
-        trigger: heroRef.current,
-        start: "40% top", end: "bottom top", scrub: 1.5,
-      },
-    });
-
     // ── Scroll: background parallax ──────────────────────────────────
     gsap.to(".bg-parallax", {
       y: -100,
@@ -112,25 +96,37 @@ export default function Hero() {
 
     // ── Scroll: text fade-up ─────────────────────────────────────────
     gsap.to(textBlockRef.current, {
-      y: -80,
+      y: -120,
       opacity: 0,
       ease: "none",
       scrollTrigger: {
         trigger: heroRef.current,
-        start: "15% top",
-        end: "70% top",
+        start: "10% top",
+        end: "60% top",
         scrub: 1,
       },
     });
-
+    // ── Scroll: dramatic car animation ──────────────────────────────
+    gsap.to(carRef.current, {
+      y: -800,
+      scale: 0,
+      opacity: 0,
+      ease: "none",
+      scrollTrigger: {
+        trigger: heroRef.current,
+        start: "0% top",
+        end: "120% top",
+        scrub: 1.2,
+      },
+    });
     return () => ScrollTrigger.getAll().forEach((t) => t.kill());
   }, []);
 
   return (
     <section
       ref={heroRef}
-      className="relative min-h-screen flex flex-col items-center justify-center
-                 bg-[#05070f] overflow-hidden px-4 pb-28 pt-14"
+      className="relative flex flex-col items-center
+                 bg-[#05070f] overflow-x-hidden px-4 pt-14 pb-2"
     >
       {/* Background parallax */}
       <div className="bg-parallax absolute inset-0 pointer-events-none">
@@ -148,7 +144,7 @@ export default function Hero() {
 
       <div ref={textBlockRef}
            className="relative z-10 flex flex-col items-center justify-center
-                      text-center gap-6 px-6 max-w-5xl">
+                      text-center gap-6 px-6 max-w-5xl min-h-[60vh]">
         <p ref={taglineRef}
            className="text-[11px] tracking-[0.35em] uppercase
                       text-white/40 mb-2">
@@ -188,17 +184,15 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Car */}
-      <div className="absolute inset-x-0 bottom-0 flex justify-center pb-10 pointer-events-none z-20">
-        <div ref={carRef}
-             className="w-[min(760px,96vw)] max-w-[960px] transform-gpu will-change-transform">
-          <img
-            src="https://paraschaturvedi.github.io/car-scroll-animation/McLaren%20720S%202022%20top%20view.png"
-            alt="hero car"
-            className="w-full object-contain rounded-[28px] border border-white/10 shadow-[0_-40px_100px_rgba(252,165,0,0.24)]"
-          />
-          <div className="absolute inset-x-0 bottom-0 mx-auto h-[2px] w-[70%] blur-[4px] bg-gradient-to-r from-transparent via-orange-400/60 to-transparent" />
-        </div>
+      {/* Car - Below Text */}
+      <div ref={carRef}
+           className="relative z-20 w-[min(880px,98vw)] max-w-6xl pointer-events-none transform-gpu will-change-transform mt-6 mb-32">
+        <img
+          src="https://paraschaturvedi.github.io/car-scroll-animation/McLaren%20720S%202022%20top%20view.png"
+          alt="hero car"
+          className="w-full object-contain"
+        />
+        <div className="absolute inset-x-0 bottom-[-40px] mx-auto h-[3px] w-[80%] blur-[6px] bg-gradient-to-r from-transparent via-amber-500/70 to-transparent" />
       </div>
 
       {/* Scroll hint */}
