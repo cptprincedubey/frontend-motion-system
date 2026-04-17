@@ -34,6 +34,7 @@ export default function Hero() {
   const heroRef    = useRef<HTMLElement>(null);
   const taglineRef = useRef<HTMLParagraphElement>(null);
   const headlineRef= useRef<HTMLHeadingElement>(null);
+  const textBlockRef = useRef<HTMLDivElement>(null);
   const statsRef   = useRef<HTMLDivElement>(null);
   const carRef     = useRef<HTMLDivElement>(null);
   const hintRef    = useRef<HTMLDivElement>(null);
@@ -110,11 +111,15 @@ export default function Hero() {
     });
 
     // ── Scroll: text fade-up ─────────────────────────────────────────
-    gsap.to([headlineRef.current, statsRef.current, taglineRef.current], {
-      y: -80, opacity: 0, ease: "none",
+    gsap.to(textBlockRef.current, {
+      y: -80,
+      opacity: 0,
+      ease: "none",
       scrollTrigger: {
         trigger: heroRef.current,
-        start: "20% top", end: "70% top", scrub: 1,
+        start: "15% top",
+        end: "70% top",
+        scrub: 1,
       },
     });
 
@@ -124,8 +129,8 @@ export default function Hero() {
   return (
     <section
       ref={heroRef}
-      className="relative h-screen flex flex-col items-center justify-center
-                 bg-black overflow-hidden"
+      className="relative min-h-screen flex flex-col items-center justify-center
+                 bg-[#05070f] overflow-hidden px-4 pb-28 pt-14"
     >
       {/* Background parallax */}
       <div className="bg-parallax absolute inset-0 pointer-events-none">
@@ -141,58 +146,59 @@ export default function Hero() {
       {/* Grid */}
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[length:60px_60px]" />
 
-      <p ref={taglineRef}
-         className="relative z-10 text-[11px] tracking-[0.45em] uppercase
-                    text-white/40 mb-6 opacity-90">
-        Premium digital motion design</p>
+      <div ref={textBlockRef}
+           className="relative z-10 flex flex-col items-center justify-center
+                      text-center gap-6 px-6 max-w-5xl">
+        <p ref={taglineRef}
+           className="text-[11px] tracking-[0.35em] uppercase
+                      text-white/40 mb-2">
+          Premium digital motion design
+        </p>
 
-      {/* Headline */}
-      <h1
-        ref={headlineRef}
-        className="relative z-10 flex flex-wrap justify-center font-black
-                   text-white tracking-[0.45em]
-                   text-[clamp(28px,6vw,72px)]"
-        aria-label={HEADLINE}
-      >
-        {HEADLINE.split("").map((ch, i) =>
-          ch === " " ? (
-            <span key={i} className="space inline-block w-[0.45em]" />
-          ) : (
-            <span key={i} className="inline-block">{ch}</span>
-          )
-        )}
-      </h1>
+        <h1
+          ref={headlineRef}
+          className="flex flex-wrap justify-center font-black
+                     text-white tracking-[0.45em]
+                     text-[clamp(32px,6vw,88px)] leading-[0.9]"
+          aria-label={HEADLINE}
+        >
+          {HEADLINE.split("").map((ch, i) =>
+            ch === " " ? (
+              <span key={i} className="space inline-block w-[0.45em]" />
+            ) : (
+              <span key={i} className="inline-block">{ch}</span>
+            )
+          )}
+        </h1>
 
-      {/* Stats */}
-      <div ref={statsRef}
-           className="relative z-10 flex flex-wrap justify-center
-                      gap-6 md:gap-16 mt-11 px-4">
-        {STATS.map((s, i) => (
-          <div key={i} className="text-center">
-            <div className="gradient-text font-black text-[clamp(28px,4vw,48px)]">
-              <span ref={(el) => { numRefs.current[i] = el; }}>
-                0{s.suffix}
-              </span>
+        <div ref={statsRef}
+             className="flex flex-wrap justify-center gap-6 md:gap-16 mt-10 px-4">
+          {STATS.map((s, i) => (
+            <div key={i} className="text-center">
+              <div className="gradient-text font-black text-[clamp(28px,4vw,48px)]">
+                <span ref={(el) => { numRefs.current[i] = el; }}>
+                  0{s.suffix}
+                </span>
+              </div>
+              <p className="text-[11px] tracking-[0.2em] uppercase text-white/40 mt-1.5">
+                {s.label}
+              </p>
             </div>
-            <p className="text-[11px] tracking-[0.2em] uppercase text-white/40 mt-1.5">
-              {s.label}
-            </p>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
 
       {/* Car */}
-      <div ref={carRef}
-           className="absolute bottom-[-60px] left-1/2 -translate-x-1/2
-                      w-[min(680px,90vw)] pointer-events-none z-20">
-        <img
-          src="https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=900&auto=format&fit=crop&q=80"
-          alt="hero car"
-          className="w-full shadow-[0_-20px_60px_rgba(255,100,0,0.25)]"
-        />
-        {/* Ground glow */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2
-                        w-[70%] h-[2px] blur-[4px] bg-gradient-to-r from-transparent via-orange-400/50 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 flex justify-center pb-10 pointer-events-none z-20">
+        <div ref={carRef}
+             className="w-[min(760px,96vw)] max-w-[960px] transform-gpu will-change-transform">
+          <img
+            src="https://cdn.pixabay.com/photo/2012/05/29/00/43/car-49278_1280.png"
+            alt="hero car"
+            className="w-full object-contain rounded-[28px] border border-white/10 shadow-[0_-40px_100px_rgba(252,165,0,0.24)]"
+          />
+          <div className="absolute inset-x-0 bottom-0 mx-auto h-[2px] w-[70%] blur-[4px] bg-gradient-to-r from-transparent via-orange-400/60 to-transparent" />
+        </div>
       </div>
 
       {/* Scroll hint */}
