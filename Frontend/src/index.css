@@ -16,3 +16,9 @@ body {
 .animate-scrollLine {
   animation: scrollLine 2s ease-in-out infinite;
 }
+
+.gradient-text {
+  background: linear-gradient(135deg,#fff 0%,rgba(255,160,60,0.9) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

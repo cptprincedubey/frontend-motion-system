@@ -32,6 +32,7 @@ function countUp(
 
 export default function Hero() {
   const heroRef    = useRef<HTMLElement>(null);
+  const taglineRef = useRef<HTMLParagraphElement>(null);
   const headlineRef= useRef<HTMLHeadingElement>(null);
   const statsRef   = useRef<HTMLDivElement>(null);
   const carRef     = useRef<HTMLDivElement>(null);
@@ -41,10 +42,14 @@ export default function Hero() {
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
-    const chars = headlineRef.current?.querySelectorAll<HTMLSpanElement>(
-      "span:not(.space)"
-    );
-    const statCards = statsRef.current?.children;
+    const chars = headlineRef.current
+      ? Array.from(headlineRef.current.querySelectorAll<HTMLSpanElement>(
+          "span:not(.space)"
+        ))
+      : [];
+    const statCards = statsRef.current
+      ? Array.from(statsRef.current.children)
+      : [];
 
     // ── Intro timeline ───────────────────────────────────────────────
     const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
@@ -130,23 +135,16 @@ export default function Hero() {
       {/* Ambient glow */}
       <div className="pointer-events-none absolute inset-0 flex items-center
                       justify-center">
-        <div className="w-[600px] h-[600px] rounded-full"
-             style={{
-               background:
-                 "radial-gradient(circle, rgba(255,80,0,0.12) 0%, transparent 70%)",
-             }}
-        />
+        <div className="w-[600px] h-[600px] rounded-full bg-[radial-gradient(circle,rgba(255,80,0,0.12)_0%,transparent_70%)]" />
       </div>
 
       {/* Grid */}
-      <div className="pointer-events-none absolute inset-0"
-           style={{
-             backgroundImage:
-               "linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px)," +
-               "linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)",
-             backgroundSize: "60px 60px",
-           }}
-      />
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[length:60px_60px]" />
+
+      <p ref={taglineRef}
+         className="relative z-10 text-[11px] tracking-[0.45em] uppercase
+                    text-white/40 mb-6 opacity-90">
+        Premium digital motion design</p>
 
       {/* Headline */}
       <h1
@@ -171,12 +169,7 @@ export default function Hero() {
                       gap-6 md:gap-16 mt-11 px-4">
         {STATS.map((s, i) => (
           <div key={i} className="text-center">
-            <div className="font-black text-[clamp(28px,4vw,48px)]"
-                 style={{
-                   background: "linear-gradient(135deg,#fff 0%,rgba(255,160,60,0.9) 100%)",
-                   WebkitBackgroundClip: "text",
-                   WebkitTextFillColor: "transparent",
-                 }}>
+            <div className="gradient-text font-black text-[clamp(28px,4vw,48px)]">
               <span ref={(el) => { numRefs.current[i] = el; }}>
                 0{s.suffix}
               </span>
@@ -195,19 +188,11 @@ export default function Hero() {
         <img
           src="https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=900&auto=format&fit=crop&q=80"
           alt="hero car"
-          className="w-full"
-          style={{
-            filter: "drop-shadow(0 -20px 60px rgba(255,100,0,0.25))",
-          }}
+          className="w-full shadow-[0_-20px_60px_rgba(255,100,0,0.25)]"
         />
         {/* Ground glow */}
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2
-                        w-[70%] h-[2px] blur-[4px]"
-             style={{
-               background:
-                 "linear-gradient(90deg,transparent,rgba(255,100,0,0.5),transparent)",
-             }}
-        />
+                        w-[70%] h-[2px] blur-[4px] bg-gradient-to-r from-transparent via-orange-400/50 to-transparent" />
       </div>
 
       {/* Scroll hint */}
