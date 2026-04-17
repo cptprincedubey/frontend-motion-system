@@ -2,9 +2,6 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { Float, OrbitControls, Sparkles, Stars } from "@react-three/drei";
-import type { Group } from "three";
 
 const HEADLINE = "ITZ FIZZ";
 
@@ -32,56 +29,6 @@ function countUp(
     if (p < 1) requestAnimationFrame(step);
   };
   requestAnimationFrame(step);
-}
-
-function FloatingSystem() {
-  const groupRef = useRef<Group>(null);
-
-  useFrame((state, delta) => {
-    if (groupRef.current) {
-      groupRef.current.rotation.y += delta * 0.28;
-      groupRef.current.rotation.x = Math.sin(state.clock.elapsedTime / 3) * 0.12;
-    }
-  });
-
-  return (
-    <group ref={groupRef}>
-      <Float speed={1.8} rotationIntensity={0.7} floatIntensity={0.9}>
-        <group>
-          <mesh scale={1.28}>
-            <icosahedronGeometry args={[1.45, 4]} />
-            <meshPhysicalMaterial
-              clearcoat={1}
-              clearcoatRoughness={0.06}
-              roughness={0.22}
-              metalness={0.45}
-              transmission={0.72}
-              thickness={1.4}
-              envMapIntensity={2.2}
-              color="#a855f7"
-              emissive="#7c3aed"
-              emissiveIntensity={0.14}
-              specularIntensity={0.9}
-              opacity={0.94}
-              transparent
-            />
-          </mesh>
-
-          <mesh scale={1.45}>
-            <icosahedronGeometry args={[1.45, 3]} />
-            <meshBasicMaterial
-              wireframe
-              color="#c4b5fd"
-              opacity={0.22}
-              transparent
-            />
-          </mesh>
-        </group>
-      </Float>
-
-      <Sparkles count={72} scale={6} size={1.2} speed={0.35} color="#d8b4fe" />
-    </group>
-  );
 }
 
 export default function Hero() {
@@ -198,13 +145,6 @@ export default function Hero() {
       {/* Subtle grid */}
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[length:80px_80px]" />
 
-      {/* 3D Background */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        <Canvas camera={{ position: [0, 0, 1] }}>
-          <Stars radius={300} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
-        </Canvas>
-      </div>
-
       <div className="relative z-10 w-full max-w-6xl mx-auto grid gap-10 lg:grid-cols-[1.05fr_0.95fr] items-center">
         <div ref={textBlockRef}
              className="relative z-10 flex flex-col items-center justify-center text-center gap-8 px-6 py-10 lg:items-start lg:text-left
@@ -251,16 +191,13 @@ export default function Hero() {
         </div>
 
         <div ref={visualRef} className="relative flex justify-center px-4">
-          <div className="relative w-full max-w-[540px] aspect-[4/5] overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/60 shadow-[0_40px_120px_-40px_rgba(124,58,237,0.4)]">
+          <div className="relative w-full max-w-[540px] aspect-[4/5] overflow-hidden rounded-[2rem] border border-white/10 bg-gradient-to-b from-slate-950/80 to-slate-900/60 shadow-[0_40px_120px_-40px_rgba(124,58,237,0.4)]">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(167,139,250,0.18),transparent_60%)]" />
-            <Canvas camera={{ position: [0, 0, 6], fov: 32 }} className="absolute inset-0">
-              <ambientLight intensity={0.9} />
-              <directionalLight position={[2, 4, 5]} intensity={1.2} color="#d8b4fe" />
-              <directionalLight position={[-3, -2, -2]} intensity={0.4} color="#60a5fa" />
-              <FloatingSystem />
-              <Stars radius={120} depth={70} count={2200} factor={4} saturation={0.35} fade speed={1} />
-              <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} autoRotate autoRotateSpeed={0.22} />
-            </Canvas>
+            <img
+              src="https://paraschaturvedi.github.io/car-scroll-animation/McLaren%20720S%202022%20top%20view.png"
+              alt="hero car"
+              className="absolute inset-0 w-full h-full object-contain p-8 drop-shadow-2xl"
+            />
             <div className="absolute inset-x-0 bottom-4 mx-auto h-[1px] w-[64%] bg-gradient-to-r from-purple-400/70 via-white/30 to-transparent" />
           </div>
         </div>
