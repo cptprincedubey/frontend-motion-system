@@ -2,8 +2,9 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Canvas } from "@react-three/fiber";
-import { Stars } from "@react-three/drei";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { Float, OrbitControls, Sparkles, Stars } from "@react-three/drei";
+import type { Group } from "three";
 
 const HEADLINE = "ITZ FIZZ";
 
@@ -13,26 +14,6 @@ const STATS = [
   { target: 4.9, suffix: "", label: "Rating" },
 ];
 
-const PARTICLE_CLASSES = [
-  "left-[6%] top-[12%]",
-  "left-[14%] top-[72%]",
-  "left-[22%] top-[38%]",
-  "left-[31%] top-[14%]",
-  "left-[44%] top-[62%]",
-  "left-[53%] top-[22%]",
-  "left-[61%] top-[78%]",
-  "left-[70%] top-[40%]",
-  "left-[78%] top-[18%]",
-  "left-[86%] top-[64%]",
-  "left-[28%] top-[8%]",
-  "left-[18%] top-[52%]",
-  "left-[50%] top-[6%]",
-  "left-[67%] top-[54%]",
-  "left-[84%] top-[32%]",
-  "left-[10%] top-[34%]",
-  "left-[38%] top-[82%]",
-  "left-[74%] top-[8%]",
-];
 
 function countUp(
   el: HTMLElement,
@@ -53,13 +34,63 @@ function countUp(
   requestAnimationFrame(step);
 }
 
+function FloatingSystem() {
+  const groupRef = useRef<Group>(null);
+
+  useFrame((state, delta) => {
+    if (groupRef.current) {
+      groupRef.current.rotation.y += delta * 0.28;
+      groupRef.current.rotation.x = Math.sin(state.clock.elapsedTime / 3) * 0.12;
+    }
+  });
+
+  return (
+    <group ref={groupRef}>
+      <Float speed={1.8} rotationIntensity={0.7} floatIntensity={0.9}>
+        <group>
+          <mesh scale={1.28}>
+            <icosahedronGeometry args={[1.45, 4]} />
+            <meshPhysicalMaterial
+              clearcoat={1}
+              clearcoatRoughness={0.06}
+              roughness={0.22}
+              metalness={0.45}
+              transmission={0.72}
+              thickness={1.4}
+              envMapIntensity={2.2}
+              color="#a855f7"
+              emissive="#7c3aed"
+              emissiveIntensity={0.14}
+              specularIntensity={0.9}
+              opacity={0.94}
+              transparent
+            />
+          </mesh>
+
+          <mesh scale={1.45}>
+            <icosahedronGeometry args={[1.45, 3]} />
+            <meshBasicMaterial
+              wireframe
+              color="#c4b5fd"
+              opacity={0.22}
+              transparent
+            />
+          </mesh>
+        </group>
+      </Float>
+
+      <Sparkles count={72} scale={6} size={1.2} speed={0.35} color="#d8b4fe" />
+    </group>
+  );
+}
+
 export default function Hero() {
   const heroRef    = useRef<HTMLElement>(null);
   const taglineRef = useRef<HTMLParagraphElement>(null);
   const headlineRef= useRef<HTMLHeadingElement>(null);
   const textBlockRef = useRef<HTMLDivElement>(null);
   const statsRef   = useRef<HTMLDivElement>(null);
-  const carRef     = useRef<HTMLDivElement>(null);
+  const visualRef  = useRef<HTMLDivElement>(null);
   const hintRef    = useRef<HTMLDivElement>(null);
   const numRefs    = useRef<(HTMLSpanElement | null)[]>([]);
 
@@ -103,18 +134,6 @@ export default function Hero() {
       "+=0.3"
     );
 
-    // Particle animation
-    gsap.to(".hero-particle", {
-      y: "random(-80, 80)",
-      x: "random(-30, 30)",
-      opacity: "random(0.2, 0.8)",
-      duration: "random(4, 7)",
-      ease: "power1.inOut",
-      stagger: 0.05,
-      repeat: -1,
-      yoyo: true,
-    });
-
     // ── Scroll: car parallax + fade ──────────────────────────────────
     const scrollOpts = {
       trigger: heroRef.current,
@@ -141,20 +160,20 @@ export default function Hero() {
         scrub: 1,
       },
     });
-    // ── Scroll: dramatic car animation ──────────────────────────────
-    gsap.to(carRef.current, {
-      y: -800,
-      scale: 0,
-      opacity: 0,
-      rotation: 45,
-      ease: "none",
-      scrollTrigger: {
-        trigger: heroRef.current,
-        start: "0% top",
-        end: "120% top",
-        scrub: 1.2,
-      },
-    });
+    // ── Scroll: visual parallax ────────────────────────────────────
+    if (visualRef.current) {
+      gsap.to(visualRef.current, {
+        y: -90,
+        opacity: 0.68,
+        ease: "none",
+        scrollTrigger: {
+          trigger: heroRef.current,
+          start: "10% top",
+          end: "80% top",
+          scrub: 1,
+        },
+      });
+    }
     return () => ScrollTrigger.getAll().forEach((t) => t.kill());
   }, []);
 
@@ -186,67 +205,65 @@ export default function Hero() {
         </Canvas>
       </div>
 
-      {/* Particles */}
-      {PARTICLE_CLASSES.map((position, i) => (
-        <div
-          key={i}
-          className={`hero-particle absolute w-1 h-1 rounded-full bg-purple-400/30 pointer-events-none z-10 ${position}`}
-        />
-      ))}
+      <div className="relative z-10 w-full max-w-6xl mx-auto grid gap-10 lg:grid-cols-[1.05fr_0.95fr] items-center">
+        <div ref={textBlockRef}
+             className="relative z-10 flex flex-col items-center justify-center text-center gap-8 px-6 py-10 lg:items-start lg:text-left
+                        bg-slate-950/85 backdrop-blur-xl rounded-[2rem] border border-purple-500/10
+                        shadow-[0_40px_120px_-40px_rgba(124,58,237,0.35)] mx-4">
+          <p ref={taglineRef}
+             className="text-sm tracking-[0.3em] uppercase
+                        text-purple-300/80 font-semibold mb-2">
+            Premium digital motion design
+          </p>
 
-      <div ref={textBlockRef}
-           className="relative z-10 flex flex-col items-center justify-center
-                      text-center gap-8 px-6 max-w-6xl min-h-[60vh]
-                      bg-white/5 backdrop-blur-sm rounded-2xl border border-purple-500/20
-                      shadow-2xl shadow-purple-500/20 mx-4">
-        <p ref={taglineRef}
-           className="text-sm tracking-[0.2em] uppercase
-                      text-purple-300/80 font-medium mb-4">
-          Premium digital motion design
-        </p>
-
-        <h1
-          ref={headlineRef}
-          className="flex justify-center font-black
-                     text-white tracking-[0.4em] leading-[0.85]
-                     text-[clamp(36px,7vw,96px)] drop-shadow-lg"
-          aria-label={HEADLINE}
-        >
-          {HEADLINE.split("").map((ch, i) =>
-            ch === " " ? (
-              <span key={i} className="space inline-block w-[0.4em]" />
-            ) : (
-              <span key={i} className="inline-block hover:text-purple-300 transition-colors duration-300">{ch}</span>
-            )
-          )}
-        </h1>
-
-        <div ref={statsRef}
-             className="flex flex-wrap justify-center gap-8 md:gap-20 mt-12 px-4">
-          {STATS.map((s, i) => (
-            <div key={i} className="text-center group">
-              <div className="gradient-text font-black text-[clamp(32px,5vw,56px)] drop-shadow-md">
-                <span ref={(el) => { numRefs.current[i] = el; }}>
-                  0{s.suffix}
+          <h1
+            ref={headlineRef}
+            className="flex justify-center lg:justify-start font-black
+                       text-white tracking-[0.35em] leading-[0.85]
+                       text-[clamp(42px,6vw,96px)] drop-shadow-[0_20px_80px_rgba(124,58,237,0.35)]"
+            aria-label={HEADLINE}
+          >
+            {HEADLINE.split("").map((ch, i) =>
+              ch === " " ? (
+                <span key={i} className="space inline-block w-[0.5em]" />
+              ) : (
+                <span key={i} className="inline-block hover:text-purple-300 transition-colors duration-300">
+                  {ch}
                 </span>
-              </div>
-              <p className="text-xs tracking-[0.15em] uppercase text-purple-200/70 mt-2 group-hover:text-purple-300 transition-colors duration-300">
-                {s.label}
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
+              )
+            )}
+          </h1>
 
-      {/* Car - Below Text */}
-      <div ref={carRef}
-           className="relative z-20 w-[min(880px,98vw)] max-w-6xl pointer-events-none transform-gpu will-change-transform mt-6 mb-32">
-        <img
-          src="https://paraschaturvedi.github.io/car-scroll-animation/McLaren%20720S%202022%20top%20view.png"
-          alt="hero car"
-          className="w-full object-contain drop-shadow-2xl filter brightness-110 contrast-105"
-        />
-        <div className="absolute inset-x-0 bottom-[-40px] mx-auto h-[3px] w-[80%] blur-[6px] bg-gradient-to-r from-transparent via-purple-500/70 to-transparent" />
+          <div className="flex flex-wrap justify-center lg:justify-start gap-6 md:gap-8 mt-8 px-2">
+            {STATS.map((s, i) => (
+              <div key={i} className="text-center group px-7 py-5 bg-slate-950/70 rounded-3xl border border-white/10 shadow-[0_18px_60px_-30px_rgba(99,102,241,0.55)] transition-all duration-300 hover:border-purple-400/30">
+                <div className="gradient-text font-black text-[clamp(30px,4.5vw,52px)] drop-shadow-md">
+                  <span ref={(el) => { numRefs.current[i] = el; }}>
+                    0{s.suffix}
+                  </span>
+                </div>
+                <p className="text-xs tracking-[0.2em] uppercase text-purple-200/70 mt-3 group-hover:text-purple-300 transition-colors duration-300">
+                  {s.label}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div ref={visualRef} className="relative flex justify-center px-4">
+          <div className="relative w-full max-w-[540px] aspect-[4/5] overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/60 shadow-[0_40px_120px_-40px_rgba(124,58,237,0.4)]">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(167,139,250,0.18),transparent_60%)]" />
+            <Canvas camera={{ position: [0, 0, 6], fov: 32 }} className="absolute inset-0">
+              <ambientLight intensity={0.9} />
+              <directionalLight position={[2, 4, 5]} intensity={1.2} color="#d8b4fe" />
+              <directionalLight position={[-3, -2, -2]} intensity={0.4} color="#60a5fa" />
+              <FloatingSystem />
+              <Stars radius={120} depth={70} count={2200} factor={4} saturation={0.35} fade speed={1} />
+              <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} autoRotate autoRotateSpeed={0.22} />
+            </Canvas>
+            <div className="absolute inset-x-0 bottom-4 mx-auto h-[1px] w-[64%] bg-gradient-to-r from-purple-400/70 via-white/30 to-transparent" />
+          </div>
+        </div>
       </div>
 
       {/* Scroll hint */}
