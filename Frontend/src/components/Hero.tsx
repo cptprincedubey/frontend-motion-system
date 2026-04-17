@@ -3,12 +3,12 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-const HEADLINE = "MOTION SYSTEM";
+const HEADLINE = "WELCOME ITZ FIZZ";
 
 const STATS = [
-  { target: 120, suffix: "%", label: "Performance Gain" },
-  { target: 98,  suffix: "%", label: "Client Satisfaction" },
-  { target: 5000, suffix: "+", label: "Cars Delivered" },
+  { target: 95, suffix: "%", label: "Success" },
+  { target: 120, suffix: "K", label: "Users" },
+  { target: 4.9, suffix: "", label: "Rating" },
 ];
 
 function countUp(
@@ -22,7 +22,9 @@ function countUp(
     if (!start) start = ts;
     const p = Math.min((ts - start) / (duration * 1000), 1);
     const ease = 1 - Math.pow(1 - p, 3); // cubic ease-out
-    el.textContent = Math.round(ease * target) + suffix;
+    const value = ease * target;
+    const decimals = target % 1 === 0 ? 0 : 1;
+    el.textContent = value.toFixed(decimals) + suffix;
     if (p < 1) requestAnimationFrame(step);
   };
   requestAnimationFrame(step);
@@ -30,7 +32,6 @@ function countUp(
 
 export default function Hero() {
   const heroRef    = useRef<HTMLElement>(null);
-  const taglineRef = useRef<HTMLParagraphElement>(null);
   const headlineRef= useRef<HTMLHeadingElement>(null);
   const statsRef   = useRef<HTMLDivElement>(null);
   const carRef     = useRef<HTMLDivElement>(null);
@@ -48,33 +49,14 @@ export default function Hero() {
     // ── Intro timeline ───────────────────────────────────────────────
     const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
-    tl.fromTo(taglineRef.current,
-      { opacity: 0, y: 20 },
-      { opacity: 1,  y: 0, duration: 0.8 }
-    )
-    .fromTo(chars,
+    tl.fromTo(chars,
       { opacity: 0, y: 64 },
-      { opacity: 1,  y: 0, duration: 0.6, stagger: 0.04 },
-      "-=0.2"
+      { opacity: 1,  y: 0, duration: 0.6, stagger: 0.04 }
     )
-    .fromTo(hintRef.current,
-      { opacity: 0 },
-      { opacity: 1, duration: 0.6 },
-      "+=0.3"
-    );
-
-    // ── Scroll: stats animation ──────────────────────────────────────
-    gsap.fromTo(statCards,
+    .fromTo(statCards,
       { opacity: 0, y: 28 },
       {
         opacity: 1, y: 0, duration: 0.6, stagger: 0.15,
-        scrollTrigger: {
-          trigger: heroRef.current,
-          start: "top 80%",
-          end: "top 50%",
-          scrub: false,
-          toggleActions: "play none none reverse",
-        },
         onStart: () => {
           STATS.forEach((s, i) => {
             setTimeout(() => {
@@ -83,7 +65,13 @@ export default function Hero() {
             }, i * 150);
           });
         },
-      }
+      },
+      "-=0.1"
+    )
+    .fromTo(hintRef.current,
+      { opacity: 0 },
+      { opacity: 1, duration: 0.6 },
+      "+=0.3"
     );
 
     // ── Scroll: car parallax + fade ──────────────────────────────────
@@ -94,13 +82,15 @@ export default function Hero() {
     };
 
     gsap.to(carRef.current, {
-      y: -160,
+      y: -200,
+      rotate: 5,
+      scale: 0.75,
       ease: "none",
       scrollTrigger: { ...scrollOpts, scrub: 1.5 },
     });
 
     gsap.to(carRef.current, {
-      scale: 0.85, opacity: 0, ease: "none",
+      scale: 0.75, opacity: 0, ease: "none",
       scrollTrigger: {
         trigger: heroRef.current,
         start: "40% top", end: "bottom top", scrub: 1.5,
@@ -157,13 +147,6 @@ export default function Hero() {
              backgroundSize: "60px 60px",
            }}
       />
-
-      {/* Tagline */}
-      <p ref={taglineRef}
-         className="relative z-10 text-[11px] tracking-[0.35em] uppercase
-                    text-white/30 mb-6">
-        Premium Motion Experience
-      </p>
 
       {/* Headline */}
       <h1
