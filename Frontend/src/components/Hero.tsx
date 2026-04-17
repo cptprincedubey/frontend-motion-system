@@ -2,13 +2,36 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Canvas } from "@react-three/fiber";
+import { Stars } from "@react-three/drei";
 
-const HEADLINE = "ITZFIZZ";
+const HEADLINE = "ITZ FIZZ";
 
 const STATS = [
   { target: 95, suffix: "%", label: "Success" },
   { target: 120, suffix: "K", label: "Users" },
   { target: 4.9, suffix: "", label: "Rating" },
+];
+
+const PARTICLE_CLASSES = [
+  "left-[6%] top-[12%]",
+  "left-[14%] top-[72%]",
+  "left-[22%] top-[38%]",
+  "left-[31%] top-[14%]",
+  "left-[44%] top-[62%]",
+  "left-[53%] top-[22%]",
+  "left-[61%] top-[78%]",
+  "left-[70%] top-[40%]",
+  "left-[78%] top-[18%]",
+  "left-[86%] top-[64%]",
+  "left-[28%] top-[8%]",
+  "left-[18%] top-[52%]",
+  "left-[50%] top-[6%]",
+  "left-[67%] top-[54%]",
+  "left-[84%] top-[32%]",
+  "left-[10%] top-[34%]",
+  "left-[38%] top-[82%]",
+  "left-[74%] top-[8%]",
 ];
 
 function countUp(
@@ -57,7 +80,7 @@ export default function Hero() {
 
     tl.fromTo(chars,
       { opacity: 0, y: 64 },
-      { opacity: 1,  y: 0, duration: 0.6, stagger: 0.04 }
+      { opacity: 1,  y: 0, duration: 0.6, stagger: 0 }
     )
     .fromTo(statCards,
       { opacity: 0, y: 28 },
@@ -79,6 +102,18 @@ export default function Hero() {
       { opacity: 1, duration: 0.6 },
       "+=0.3"
     );
+
+    // Particle animation
+    gsap.to(".hero-particle", {
+      y: "random(-80, 80)",
+      x: "random(-30, 30)",
+      opacity: "random(0.2, 0.8)",
+      duration: "random(4, 7)",
+      ease: "power1.inOut",
+      stagger: 0.05,
+      repeat: -1,
+      yoyo: true,
+    });
 
     // ── Scroll: car parallax + fade ──────────────────────────────────
     const scrollOpts = {
@@ -111,6 +146,7 @@ export default function Hero() {
       y: -800,
       scale: 0,
       opacity: 0,
+      rotation: 45,
       ease: "none",
       scrollTrigger: {
         trigger: heroRef.current,
@@ -143,11 +179,26 @@ export default function Hero() {
       {/* Subtle grid */}
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[length:80px_80px]" />
 
+      {/* 3D Background */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <Canvas camera={{ position: [0, 0, 1] }}>
+          <Stars radius={300} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
+        </Canvas>
+      </div>
+
+      {/* Particles */}
+      {PARTICLE_CLASSES.map((position, i) => (
+        <div
+          key={i}
+          className={`hero-particle absolute w-1 h-1 rounded-full bg-purple-400/30 pointer-events-none z-10 ${position}`}
+        />
+      ))}
+
       <div ref={textBlockRef}
            className="relative z-10 flex flex-col items-center justify-center
                       text-center gap-8 px-6 max-w-6xl min-h-[60vh]
-                      bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10
-                      shadow-2xl mx-4">
+                      bg-white/5 backdrop-blur-sm rounded-2xl border border-purple-500/20
+                      shadow-2xl shadow-purple-500/20 mx-4">
         <p ref={taglineRef}
            className="text-sm tracking-[0.2em] uppercase
                       text-purple-300/80 font-medium mb-4">

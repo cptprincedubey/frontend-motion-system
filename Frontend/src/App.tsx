@@ -63,6 +63,11 @@ export default function Home() {
           </button>
         </div>
       </section>
+
+      {/* Footer */}
+      <footer className="relative py-10 px-6 bg-black text-center border-t border-purple-500/20">
+        <p className="text-purple-200/60">© 2024 ITZ FIZZ. All rights reserved.</p>
+      </footer>
     </main>
   );
 }
