@@ -7,3 +7,12 @@ body {
   margin: 0;
   padding: 0;
 }
+
+@keyframes scrollLine {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+.animate-scrollLine {
+  animation: scrollLine 2s ease-in-out infinite;
+}
